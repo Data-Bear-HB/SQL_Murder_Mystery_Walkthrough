@@ -1,0 +1,18 @@
+## **SQL Game from [Knight Lab] (https://mystery.knightlab.com/)** ##
+
+# *First, study the schema*
+(add Schema here)
+
+# *Since it's a murder, open the crime_scene_report*
+
+SELECT *
+FROM crime_scene_report
+
+# *Notice the city locations. One of them is 'SQL City'. That's probably the spot for a SQL murder.*
+# Search by type 'murder' so you don't find other crimes
+
+SELECT *
+FROM crime_scene_report
+WHERE type = 'murder'
+AND city = 'SQL City';
+
