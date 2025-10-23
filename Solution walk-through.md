@@ -6,20 +6,20 @@
 
 ![Schema](images/schema.png)
 
-# *Since it's a murder, open the crime_scene_report*
+*Since it's a murder, open the crime_scene_report*
 
 SELECT *
 FROM crime_scene_report
 
-# *Notice the city locations. One of them is 'SQL City'. That's probably the spot for a SQL murder.*
-# Search by type 'murder' so you don't find other crimes
+-*Notice the city locations. One of them is 'SQL City'. That's probably the spot for a SQL murder.*
+-Search by type 'murder' so you don't find other crimes
 
 SELECT *
 FROM crime_scene_report
 WHERE type = 'murder'
 AND city = 'SQL City';
 
-# Out of the three records in the data output, one of the interview descriptions looks the most promising
+Out of the three records in the data output, one of the interview descriptions looks the most promising
 
 date: 20180115, 
 type: murder, 
