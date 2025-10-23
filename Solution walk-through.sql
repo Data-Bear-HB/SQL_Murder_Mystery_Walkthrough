@@ -62,8 +62,8 @@ WHERE person_id = 16371 OR person_id = 14887
 **Output: 
 Note: I added their names to the person_id in the interview table so we can remember who is giving information
 
-Morty -- person_id	--transcript
-14887 --	I heard a gunshot and then saw a man run out. He had a "Get Fit Now Gym" bag. The membership number on the bag started with "48Z". Only gold members have those bags. The man got into a car with a plate that included "H42W".
+person_id	--transcript
+Morty -- 14887 --	I heard a gunshot and then saw a man run out. He had a "Get Fit Now Gym" bag. The membership number on the bag started with "48Z". Only gold members have those bags. The man got into a car with a plate that included "H42W".
 
 Annabel -- 16371 --	I saw the murder happen, and I recognized the killer from my gym when I was working out last week on January the 9th.
 
@@ -73,25 +73,37 @@ Annabel -- 16371 --	I saw the murder happen, and I recognized the killer from my
 SELECT *
 FROM get_fit_now_check_in
 WHERE check_in_date LIKE '%20180109%'
+AND membership_id LIKE '%48Z%'
 
-Output: 7 entries. 
+Output:  
 membership_id	check_in_date	check_in_time	check_out_time
-X0643	20180109	957	1164
-UK1F2	20180109	344	518
-XTE42	20180109	486	1124
-1AE2H	20180109	461	944
-6LSTG	20180109	399	515
-7MWHJ	20180109	273	885
-GE5Q8	20180109	367	959
 48Z7A	20180109	1600	1730
 48Z55	20180109	1530	1700
-90081	20180109	1600	1700
-
 
 # We need to narrow down Annabel's workout time  so we can cross reference to other gym users at the same time. 
-#Annabel's id number (16371 ) for get_fit_member id# and person table id# are the same) 
+- We can start by using Annabel's person_id number (16371) to find her gym membership id number
 
-# We notice two users with "48Z" in their name.
+SELECT *
+FROM get_fit_now_member
+WHERE person_id = 16371
 
+Output:
+  id	person_id	name	membership_start_date	membership_status
+90081	16371	Annabel Miller	20160208	gold
 
--Who at the gym has a gold membership of "48Z" on their member number AND a license plate that include "H42W"?
+-Annabel's get_fit_now id number (90081 ) 
+
+#Find Annabel's workout time
+SELECT *
+FROM get_fit_now_check_in
+WHERE membership_id = '90081'
+  
+Output:
+ membership_id	check_in_date	check_in_time	check_out_time
+90081	20180109	1600	1700
+
+-Looks like she worked out on January 9th from 4pm to 5 pm
+
+# Who at the gym has a gold membership of "48Z" on their member number AND 
+  
+# Does this person have a license plate that include "H42W"?
