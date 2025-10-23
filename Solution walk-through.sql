@@ -102,8 +102,91 @@ Output:
  membership_id	check_in_date	check_in_time	check_out_time
 90081	20180109	1600	1700
 
--Looks like she worked out on January 9th from 4pm to 5 pm
+-Annabel worked out on January 9th, from 4pm to 5 pm
 
-# Who at the gym has a gold membership of "48Z" on their member number AND 
+# Who at the gym has a gold membership of "48Z" on their member number AND worked out at an overlapping time?
   
-# Does this person have a license plate that include "H42W"?
+membership_id	check_in_date	check_in_time	check_out_time
+48Z7A	20180109	1600	1730
+48Z55	20180109	1530	1700
+  
+# Do either of these people have a license plate that include "H42W"?
+SELECT *
+FROM get_fit_now_member
+WHERE id = '48Z7A' OR id = '48Z55'
+
+Output:
+id	person_id	name	membership_start_date	membership_status
+48Z55	67318	Jeremy Bowers	20160101	gold
+48Z7A	28819	Joe Germuska	20160305	gold
+
+-Using the person table, we can find their license_id
+id	name	license_id	address_number	address_street_name	ssn
+28819	Joe Germuska	173289	111	Fisk Rd	138909730
+67318	Jeremy Bowers	423327	530	Washington Pl, Apt 3A	871539279
+
+-Using the license_id column, we can search the driver_license table to look at their license plate
+SELECT *
+FROM drivers_license
+WHERE id = '173289' OR id = '423327'
+
+Output:
+id	age	height	eye_color	hair_color	gender	plate_number	car_make	car_model
+423327	30	70	brown	brown	male	0H42W2	Chevrolet	Spark LS
+
+-only one entry! And the plate matches the "H42W" description! We're onto something.
+
+#Let's check Jeremy Bower's interview transcript
+SELECT *
+FROM interview
+WHERE person_id = 67318
+
+Output: 
+person_id	transcript
+67318	I was hired by a woman with a lot of money. I don't know her name but I know she's around 5'5" (65") or 5'7" (67"). She has red hair and she drives a Tesla Model S. I know that she attended the SQL Symphony Concert 3 times in December 2017.
+
+# Find the red-headed, Tesla driving woman
+SELECT *
+FROM drivers_license
+WHERE hair_color = 'red'
+AND car_make = 'Tesla'
+AND car_model = 'Model S'
+AND gender = 'female'
+
+Output: 
+id	age	height	eye_color	hair_color	gender	plate_number	car_make	car_model
+202298	68	66	green	red	female	500123	Tesla	Model S
+291182	65	66	blue	red	female	08CM64	Tesla	Model S
+918773	48	65	black	red	female	917UU3	Tesla	Model S
+
+
+  
+#Find their names. Cross reference their id/person_id with events (SQL Symphony) in facebook_event_checkin
+SELECT *
+FROM person
+WHERE license_id = '291182' OR license_id = '202298' OR license_id = '918773'
+
+Output:
+id	name	license_id	address_number	address_street_name	ssn
+78881	Red Korb	918773	107	Camerata Dr	961388910
+90700	Regina George	291182	332	Maple Ave	337169072
+99716	Miranda Priestly	202298	1883	Golden Ave	987756388
+
+SELECT *
+FROM facebook_event_checkin
+WHERE person_id = 78881 OR person_id = 90700 OR person_id = 99716
+
+Output: 
+  person_id	event_id	event_name	date
+99716	1143	SQL Symphony Concert	20171206
+99716	1143	SQL Symphony Concert	20171212
+99716	1143	SQL Symphony Concert	20171229
+
+-Oh isn't that interesting! One person went to three SQL Symphony concerts, just like her hitman said she did. And that person is....
+SELECT *
+FROM person
+WHERE id = 99716
+
+Enter the solution (name) in the [solution box] (https://mystery.knightlab.com/)
+
+Thanks for playing along with me! :)
