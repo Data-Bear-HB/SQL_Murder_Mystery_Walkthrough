@@ -4,7 +4,7 @@
 # *First, study the schema*
 -Pay special attention to where the data of one column leaves one table (blue arrow) to join another table (gold key) to keep track of how the tables are joined.
 
-![Schema](schema.png)
+![Schema](images/schema.png)
 
 # *Since it's a murder, open the crime_scene_report*
 
