@@ -156,7 +156,7 @@ WHERE id = '173289' OR id = '423327'
 
 -How exciting! Only one entry! And the plate matches the "H42W" description! We're onto something.
 
--Let's check Jeremy Bower's interview transcript using the 
+-Let's check Jeremy Bower's interview transcript 
 ```
 SELECT *
 FROM interview
@@ -180,6 +180,7 @@ AND gender = 'female'
 | 202298	| 68	| 66	| green	| red	| female	| 500123	| Tesla	| Model S|
 | 291182	| 65	| 66	| blue	| red	| female	| 08CM64	| Tesla	|Model S |
 | 918773	| 48 |	65	| black	| red	| female	| 917UU3	| Tesla	| Model S |
+
 -Find their names. Cross reference their id/person_id with events (SQL Symphony) in facebook_event_checkin
 ```
 SELECT *
