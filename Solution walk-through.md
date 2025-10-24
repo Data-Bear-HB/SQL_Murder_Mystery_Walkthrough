@@ -1,31 +1,31 @@
-## **SQL Murder Mystery Game##
+## SQL Murder Mystery Game
 from [Knight Lab](https://mystery.knightlab.com/)
 
 **Warning: Game Spoilers Ahead**
 
-# *First, study the schema*
--Pay special attention to where the data of a column leaves table A (blue arrow) to join table B (gold key). You'll need to reference the schema often to keep track of table joins.
+-First, study the schema. Pay special attention to where the data of a column leaves table A (blue arrow) to join table B (gold key). You'll need to reference the schema often to keep track of table joins.
 
 ![Schema](images/schema.png)
 
 START
-*We're investigating a murder, so let's start at the crime_scene_report*
+
+We're investigating a murder, so let's start at the crime_scene_report table.
 
 ```
 SELECT *
 FROM crime_scene_report
 ```
 
--*Notice the city locations. One of them is 'SQL City'. That's probably the spot for a SQL murder, right?*
--Search by type 'murder' so you don't find other crimes
+-Notice the city locations. One of them is 'SQL City'. That's probably the spot for a SQL murder, right?
+
+-Search by type for 'murder' so you don't find other crimes
 ```
 SELECT *
 FROM crime_scene_report
 WHERE type = 'murder'
 AND city = 'SQL City';
 ```
-
-Out of the three records in the data output, one of the interview descriptions looks the most promising
+-Out of the three records in the data output, one of the descriptions looks the most promising.
 
 | date | type | description | city |
 |----------|----------|----------|---------|
@@ -34,8 +34,9 @@ Out of the three records in the data output, one of the interview descriptions l
 
 -Using the addresses of each witness, we can search for their names and ids.
 
--First Witness Information: Last house on Northwestern Dr.
-  -There are a lot of houses on that street name so we search by the last address number.
+-**First Witness Information**: Last house on Northwestern Dr.
+
+-Upon an initial look, there are a lot of houses on the street "Northwestern Dr". To narrow down, check by the last address number.
 ```
 SELECT *
 FROM person
@@ -47,8 +48,9 @@ LIMIT 1;
 |----------|------------|----------------|----------------------| -------|
 |14887|	Morty Schapiro | 118009	| 4919 | Northwestern Dr	| 111564949|
 
--Find Second Witness Information
-  -Lives on Franklin Ave and her name is Annabel.
+-**Find Second Witness Information**
+
+  -We already know she lives on Franklin Ave and her name is Annabel.
 ```
 SELECT *
 FROM person
@@ -58,10 +60,9 @@ AND name LIKE '%Annabel%';
 
 | id	| name | license_id |	address_number | address_street_name | ssn |
 |-----|-----|------|-----------|-----------|------------|
-|16371	| Annabel Miller	| 490173 | 	103	Franklin Ave | 318771143 |
+|16371	| Annabel Miller	| 490173 | 	103	| Franklin Ave | 318771143 |
 
--Now we can look up the interviews for these two witnessess, Annabel and Morty
-
+-Now we can look up the interviews for these two witnessess, Annabel and Morty.
 ```
 SELECT *
 FROM interview
@@ -74,7 +75,7 @@ WHERE person_id = 16371 OR person_id = 14887
 |Morty | 14887 | I heard a gunshot and then saw a man run out. He had a "Get Fit Now Gym" bag. The membership number on the bag started with "48Z". Only gold members have those bags. The man got into a car with a plate that included "H42W". |
 | Annabel | 16371 |	I saw the murder happen, and I recognized the killer from my gym when I was working out last week on January the 9th.|
 
--What people were working out on at the gym January 9th at the same time as Annabel?
+-What people were working out on at the gym January 9th WITH as Annabel AND have "48Z" in their gym membership id AND have "H42W" on their license plate?
 ```
 SELECT *
 FROM get_fit_now_check_in
@@ -149,62 +150,64 @@ SELECT *
 FROM drivers_license
 WHERE id = '173289' OR id = '423327'
 ```
-id	age	height	eye_color	hair_color	gender	plate_number	car_make	car_model
-423327	30	70	brown	brown	male	0H42W2	Chevrolet	Spark LS
+| id	| age	| height	| eye_color |	hair_color |	gender |	plate_number	| car_make |	car_model |
+|------|----------|-----|----|-----|-----|-----|------|---|
+| 42332730 |	70 |	brown |	brown	 | male	| 0H42W2 | Chevrolet	| Spark LS |
 
--only one entry! And the plate matches the "H42W" description! We're onto something.
+-How exciting! Only one entry! And the plate matches the "H42W" description! We're onto something.
 
-#Let's check Jeremy Bower's interview transcript
+-Let's check Jeremy Bower's interview transcript using the 
+```
 SELECT *
 FROM interview
 WHERE person_id = 67318
+```
+| person_id |	transcript |
+|-------|-----------|
+| 67318 |	I was hired by a woman with a lot of money. I don't know her name but I know she's around 5'5" (65") or 5'7" (67"). She has red hair and she drives a Tesla Model S. I know that she attended the SQL Symphony Concert 3 times in December 2017. |
 
-Output: 
-person_id	transcript
-67318	I was hired by a woman with a lot of money. I don't know her name but I know she's around 5'5" (65") or 5'7" (67"). She has red hair and she drives a Tesla Model S. I know that she attended the SQL Symphony Concert 3 times in December 2017.
-
-# Find the red-headed, Tesla driving woman
+-Find the red-headed, Tesla driving woman
+```
 SELECT *
 FROM drivers_license
 WHERE hair_color = 'red'
 AND car_make = 'Tesla'
 AND car_model = 'Model S'
 AND gender = 'female'
-
-Output: 
-id	age	height	eye_color	hair_color	gender	plate_number	car_make	car_model
-202298	68	66	green	red	female	500123	Tesla	Model S
-291182	65	66	blue	red	female	08CM64	Tesla	Model S
-918773	48	65	black	red	female	917UU3	Tesla	Model S
-
-
-  
-#Find their names. Cross reference their id/person_id with events (SQL Symphony) in facebook_event_checkin
+```
+| id	| age	| height	| eye_color	| hair_color |	gender	| plate_number	| car_make	| car_model |
+|-----|------|------|------|-----|-----|-----|-----|-----|
+| 202298	| 68	| 66	| green	| red	| female	| 500123	| Tesla	| Model S|
+| 291182	| 65	| 66	| blue	| red	| female	| 08CM64	| Tesla	|Model S |
+| 918773	| 48 |	65	| black	| red	| female	| 917UU3	| Tesla	| Model S |
+-Find their names. Cross reference their id/person_id with events (SQL Symphony) in facebook_event_checkin
+```
 SELECT *
 FROM person
 WHERE license_id = '291182' OR license_id = '202298' OR license_id = '918773'
-
-Output:
-id	name	license_id	address_number	address_street_name	ssn
-78881	Red Korb	918773	107	Camerata Dr	961388910
-90700	Regina George	291182	332	Maple Ave	337169072
-99716	Miranda Priestly	202298	1883	Golden Ave	987756388
-
+```
+| id	| name	| license_id	| address_number	| address_street_name	| ssn |
+|-----|-----|-----|-----|-----|-----|
+| 78881	| Red Korb	| 918773	| 107	| Camerata Dr	| 961388910 |
+| 90700	| Regina George	| 291182	| 332	| Maple Ave	| 337169072 |
+| 99716	| Miranda Priestly	| 202298	| 1883	| Golden Ave	| 987756388 |
+```
 SELECT *
 FROM facebook_event_checkin
 WHERE person_id = 78881 OR person_id = 90700 OR person_id = 99716
+```
+| person_id	| event_id	| event_name	| date |
+|------|-----|-----|-----|
+| 99716	| 1143	| SQL Symphony Concert	| 20171206 |
+| 99716	| 1143	| SQL Symphony Concert	| 20171212 |
+| 99716	| 1143	| SQL Symphony Concert	| 20171229 |
 
-Output: 
-  person_id	event_id	event_name	date
-99716	1143	SQL Symphony Concert	20171206
-99716	1143	SQL Symphony Concert	20171212
-99716	1143	SQL Symphony Concert	20171229
-
--Oh isn't that interesting! One person went to three SQL Symphony concerts, just like her hitman said she did. And that person is....
+-Oh isn't that interesting! One person went to three SQL Symphony concerts, just like her hitman said she did. Hmmm.... And that person is....
+```
 SELECT *
 FROM person
 WHERE id = 99716
-
-Enter the solution (name) in the [solution box] (https://mystery.knightlab.com/)
+```
+-Enter the solution (name) in the [solution box] (https://mystery.knightlab.com/)
 
 Thanks for playing along with me! :)
