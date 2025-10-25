@@ -1,7 +1,7 @@
 ## SQL Murder Mystery Game
 from [Knight Lab](https://mystery.knightlab.com/)
 
-**Warning: Game Spoilers Ahead**
+⚠️**Warning: Game Spoilers Ahead**⚠️
 
 -First, study the schema. Pay special attention to where the data of a column leaves table A (blue arrow) to join table B (gold key). You'll need to reference the schema often to keep track of table joins.
 
@@ -9,7 +9,7 @@ from [Knight Lab](https://mystery.knightlab.com/)
 
 START
 
-We're investigating a murder, so let's start at the crime_scene_report table.
+🔍 We're investigating a murder, so let's start at the crime_scene_report table.
 
 ```
 SELECT *
@@ -75,7 +75,7 @@ WHERE person_id = 16371 OR person_id = 14887
 |Morty | 14887 | I heard a gunshot and then saw a man run out. He had a "Get Fit Now Gym" bag. The membership number on the bag started with "48Z". Only gold members have those bags. The man got into a car with a plate that included "H42W". |
 | Annabel | 16371 |	I saw the murder happen, and I recognized the killer from my gym when I was working out last week on January the 9th.|
 
--What people were working out on at the gym January 9th WITH as Annabel AND have "48Z" in their gym membership id AND have "H42W" on their license plate?
+🔍 What people were working out on at the gym January 9th WITH as Annabel AND have "48Z" in their gym membership id AND have "H42W" on their license plate?
 ```
 SELECT *
 FROM get_fit_now_check_in
